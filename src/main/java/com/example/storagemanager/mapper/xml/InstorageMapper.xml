@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.storagemanager.mapper.InstorageMapper">
+
+    <select id="pageQuery" parameterType="com.example.storagemanager.entity.dto.InOutStoragePageQueryDTO" resultType="com.example.storagemanager.entity.vo.InOutStorageVO">
+        select g.name as goodsName,i.gmt_create as gmtCreate,i.num as num,s.name as storageName,u.username as userName
+        from instorage i join Goods g on i.goods_id = g.id join storage s on i.storage_id = s.id join user u on i.user_id = u.id
+        where 1 = 1
+        <if test="goodsName != null and goodsName != ''">
+            and g.name like concat('%',#{goodsName},'%')
+        </if>
+        <if test="storageName != null and storageName != ''">
+            and s.name = #{storageName}
+        </if>
+        <if test="userName != null and userName != ''">
+            and u.username = #{userName}
+        </if>
+        order by i.gmt_create desc
+        limit #{page},#{pageSize}
+    </select>
+</mapper>

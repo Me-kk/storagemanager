@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.storagemanager.mapper.GoodsMapper">
+    <select id="pageQuery" resultType="com.example.storagemanager.entity.vo.GoodsDetailVO" parameterType="com.example.storagemanager.entity.dto.PageQueryGoodsDTO">
+    select g.id goodsId ,g.name name,p.id providerId,p.name providerName,p.phone providerPhone,s.id storageId,s.name storageName,gs.num storageNum,g.num num,g.gmt_create goodsCreate
+    from Goods g left outer join provider p on g.provider_id = p.id left outer join goods_storage gs on g.id = gs.goods_id left outer join storage s on gs.storage_id = s.id
+    where 1 = 1
+    <if test="name != null and name != ''">
+        and g.name like concat('%',#{name},'%')
+    </if>
+    <if test="providerId != null">
+        and p.id = #{providerId}
+    </if>
+    <if test="storageId != null">
+        and s.id = #{storageId}
+    </if>
+    <if test="beginTime != null">
+        and g.gmt_create &gt;= #{beginTime}
+    </if>
+    <if test="endTime != null">
+        and g.gmt_create &lt;= #{endTime}
+    </if>
+    order by goodsCreate desc
+    limit #{page},#{pageSize}
+    </select>
+    <select id="countQuery" resultType="java.lang.Long" parameterType="com.example.storagemanager.entity.dto.PageQueryGoodsDTO">
+        select count(*)
+        from Goods g left outer join provider p on g.provider_id = p.id left outer join goods_storage gs on g.id = gs.goods_id left outer join storage s on gs.storage_id = s.id
+        where 1 = 1
+        <if test="name != null and name != ''">
+            and g.name like concat('%',#{name},'%')
+        </if>
+        <if test="providerId != null">
+            and p.id = #{providerId}
+        </if>
+        <if test="storageId != null">
+            and s.id = #{storageId}
+        </if>
+        <if test="beginTime != null">
+            and g.gmt_create &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            and g.gmt_create &lt;= #{endTime}
+        </if>
+    </select>
+</mapper>
